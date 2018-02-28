@@ -13,15 +13,38 @@ namespace Heurika_project
 
         }
 
-        public Boolean Astar(Intersection start, Intersection end)
+        //it is like Breadth first reach, but we have an ordered queue
+        public Boolean Astar(Problem problem)
         {
+            Node node = new Node(problem.initial(), null, null, 0);
+            if (problem.equalsGoal(node)) { return true; }
+            List<Node> frontier = new List<Node>();
+            frontier.Add(node);
+            List<Node> expanded = new List<Node>();
 
-            return false;
+            while (frontier.Any())
+            {
+                frontier.OrderBy(x => x.cost()); //orders frontier in ascending order
+                node = frontier[0]; //picks the one with lowest value
+                Console.WriteLine("current node: " + node.State().print());
+                frontier.Remove(node);
+                expanded.Add(node);
+                foreach (Node child in node.getChildren(problem))
+                {   //if child state not in frontier and not in expanded
+                    if (!frontier.Exists(x => x.State() == child.State()) && !expanded.Exists(x => x.State() == child.State()))
+                    {
+                        if (problem.equalsGoal(child)) { return true; } //here we should return solution... parent of parent..
+                        frontier.Add(child);
+                    }
+                }
+            }
+            return false; //if frontier is empty
         }
 
-        private int h(Intersection start, Intersection end)
+        private int h()//h(Intersection start, Intersection end)
         { //straigth line from start to end.
-            return Convert.ToInt32(Math.Sqrt(Math.Pow(end.X() - start.X(), 2) + Math.Pow(end.Y() - start.Y(), 2)));
+            //return Convert.ToInt32(Math.Sqrt(Math.Pow(end.X() - start.X(), 2) + Math.Pow(end.Y() - start.Y(), 2)));
+            return 0;
         }
 
         public Boolean UniformCostSearch(Intersection start, Intersection end)
@@ -63,12 +86,26 @@ namespace Heurika_project
                 foreach (Node child in node.getChildren(problem))
                 {   //if child state not in frontier and not in expanded
                     if ( !frontier.Exists(x=> x.State() == child.State()) && !expanded.Exists(x=> x.State() == child.State())){
-                        if (problem.equalsGoal(child)) { return true; } //here we should return solution... parent of parent..
+                        if (problem.equalsGoal(child)) {
+                            solution(child);
+                            return true; } //here we should return solution... parent of parent..
                         frontier.Add(child);
                     }
                 }
             }
             return false; //if frontier is empty
+        }
+
+        private void solution(Node node)
+        {
+
+            Console.WriteLine("\n" + "\n" +"Goal state is reached with total path cost: " + Convert.ToString(node.cost()));
+            Console.WriteLine("\n" + "path from end to start:");
+            while (node.parentNode()!= null)
+            {
+                node.takenStreet().print();
+                node = node.parentNode();
+            }
         }
 
     }

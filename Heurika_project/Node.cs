@@ -49,6 +49,21 @@ namespace Heurika_project
         {
             return this.state;
         }
+
+        public int cost()
+        {
+            return pathCost;
+        }
+
+        public Node parentNode()
+        {
+            return this.parent;
+        }
+
+        public Street takenStreet()
+        {
+            return this.action;
+        }
     }
 
 }
