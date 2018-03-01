@@ -39,7 +39,7 @@ namespace Heurika_project
             foreach (Street street in connectedStreets)
             {
                 street.print();
-                Node newChild = new Node(street.End(), this, street, this.pathCost + street.Length());
+                Node newChild = new Node(street.End(), this, street, this.pathCost + street.Length() +problem.heuristic(street.End()));
                 children.Add(newChild);
             }
             return children;

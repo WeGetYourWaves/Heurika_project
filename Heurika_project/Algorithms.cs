@@ -13,12 +13,13 @@ namespace Heurika_project
 
         }
 
-        //it is like Breadth first reach, but we have an ordered queue
+        //it is like Uniform cost search, but we have an ordered queue
+        //path cost is set in problem class..
+        // algo from Book: figure 3.14
         public Boolean Astar(Problem problem)
         {
             Node node = new Node(problem.initial(), null, null, 0);
-            if (problem.equalsGoal(node)) { return true; }
-            List<Node> frontier = new List<Node>();
+            List<Node> frontier = new List<Node>(); //priority queue
             frontier.Add(node);
             List<Node> expanded = new List<Node>();
 
@@ -26,25 +27,30 @@ namespace Heurika_project
             {
                 frontier.OrderBy(x => x.cost()); //orders frontier in ascending order
                 node = frontier[0]; //picks the one with lowest value
-                Console.WriteLine("current node: " + node.State().print());
                 frontier.Remove(node);
+                Console.WriteLine("current node: " + node.State().print());
+                if (problem.equalsGoal(node)) { return solution(node); }
                 expanded.Add(node);
                 foreach (Node child in node.getChildren(problem))
                 {   //if child state not in frontier and not in expanded
-                    if (!frontier.Exists(x => x.State() == child.State()) && !expanded.Exists(x => x.State() == child.State()))
-                    {
-                        if (problem.equalsGoal(child)) { return true; } //here we should return solution... parent of parent..
-                        frontier.Add(child);
+                    if((!frontier.Exists(x => x.State() == child.State()))){
+                        if(!expanded.Exists(x => x.State() == child.State()))
+                        {
+                            frontier.Add(child);
+                        }
+                    }
+                    else//here we know that chil is in frontier, as above if failed.
+                    {   //if node already exist in frontier, but child can reach it wirh less cost, then replace node in frontier.
+                        int i = frontier.FindIndex(x=> x.State() == child.State());
+                        if(frontier[i].cost() >child.cost())
+                        {
+                            frontier[i] = child;
+                        }
                     }
                 }
             }
+            Console.WriteLine("\n" + "Frontier is empty, no solution found.");
             return false; //if frontier is empty
-        }
-
-        private int h()//h(Intersection start, Intersection end)
-        { //straigth line from start to end.
-            //return Convert.ToInt32(Math.Sqrt(Math.Pow(end.X() - start.X(), 2) + Math.Pow(end.Y() - start.Y(), 2)));
-            return 0;
         }
 
         public Boolean UniformCostSearch(Intersection start, Intersection end)
@@ -87,8 +93,8 @@ namespace Heurika_project
                 {   //if child state not in frontier and not in expanded
                     if ( !frontier.Exists(x=> x.State() == child.State()) && !expanded.Exists(x=> x.State() == child.State())){
                         if (problem.equalsGoal(child)) {
-                            solution(child);
-                            return true; } //here we should return solution... parent of parent..
+                            return solution(child);
+                        } 
                         frontier.Add(child);
                     }
                 }
@@ -96,16 +102,23 @@ namespace Heurika_project
             return false; //if frontier is empty
         }
 
-        private void solution(Node node)
+        //prints out solution path.. 
+        private bool solution(Node node)
         {
-
             Console.WriteLine("\n" + "\n" +"Goal state is reached with total path cost: " + Convert.ToString(node.cost()));
-            Console.WriteLine("\n" + "path from end to start:");
+            Console.WriteLine("\n" + "path from start to end:");
+            List<string> output = new List<string>();
             while (node.parentNode()!= null)
             {
-                node.takenStreet().print();
+                output.Add(node.takenStreet().print());
                 node = node.parentNode();
             }
+            output.Reverse();
+            foreach (String arrow in output)
+            {
+                Console.WriteLine(arrow);
+            }
+            return true;
         }
 
     }

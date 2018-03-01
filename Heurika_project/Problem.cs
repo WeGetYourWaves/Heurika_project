@@ -31,5 +31,10 @@ namespace Heurika_project
         {
             return initialState;
         }
+        public int heuristic(Intersection currentState)
+        { //straigth line from currentState to goalState.
+            //return Convert.ToInt32(Math.Sqrt(Math.Pow(goalState.X() - currentState.X(), 2) + Math.Pow(goalState.Y() - currentState.Y(), 2)));
+            return 0;
+        }
     }
 }

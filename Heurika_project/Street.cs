@@ -44,9 +44,9 @@ namespace Heurika_project
             return streetLength;
         }
 
-        public void print()
+        public string print()
         {
-            Console.WriteLine(start.print() + " " + streetName + " " +end.print() + "  streetLength: " + streetLength);
+            return (start.print() + " " + streetName + " " +end.print() + "  streetLength: " + streetLength);
         }
     }
 }
