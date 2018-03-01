@@ -21,6 +21,8 @@ namespace Heurika_project
             computeStreetLength();
         }
 
+        // SOME TEST COMMENT FOR GITKRAKEN
+
         private void computeStreetLength()
         { //street length == length of arrow from start to end
             streetLength = Convert.ToInt32(Math.Sqrt(Math.Pow(end.X()- start.X(), 2)+ Math.Pow(end.Y()-start.Y(),2)));
