@@ -13,15 +13,22 @@ namespace InferenceEngineForPropositionalLogic
 
         public List<int> Resolve(Clause clause)
         {
+            var result = Enumerable.Repeat(0, litelars.Count).ToList();
+
             for (int i = 0; i < litelars.Count; i++)
-            {
+            {               
+
                 if (litelars[i] == -clause.litelars[i])
                 {
-                    litelars[i] = clause.litelars[i] = 0;
+                    result[i] = 0;
+                }
+                else
+                {
+                    result[i] = litelars[i];
                 }
             }
 
-            return litelars;
+            return result;
         }
 
         private int calculateHeuristic(Clause clause)
